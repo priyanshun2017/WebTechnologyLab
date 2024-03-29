@@ -1,0 +1,67 @@
+/* styles.css */
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.comparison-table th, .comparison-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.comparison-table th {
+    background-color: #f2f2f2;
+}
+
+.comparison-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.comparison-table tr:hover {
+    background-color: #f2f2f2;
+}
+
+.container {
+    display: flex;
+}
+
+.column {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Media Query for screens smaller than 600px (phones) */
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column; /* Stack columns vertically */
+    }
+}
+
+/* Media Query for screens between 601px and 1024px (tablets) */
+@media screen and (min-width: 601px) and (max-width: 1024px) {
+    .column {
+        flex: 1; /* Reset flex property for tablets */
+    }
+}
+
+/* Media Query for screens larger than 1024px (laptops) */
+@media screen and (min-width: 1025px) {
+    .column {
+        flex: 1; /* Reset flex property for laptops */
+    }
+}
