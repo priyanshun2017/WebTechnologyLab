@@ -3,9 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Web Worker Example</title>
 </head>
 <body>
-    
+    <h1>Web Worker Example</h1>
+    <button onclick="startCalculation()">Start Calculation</button>
+    <div id="result"></div>
+
+    <script>
+        function startCalculation() {
+            // Create a new web worker
+            const worker = new Worker('worker.js');
+
+            // Listen for messages from the worker
+            worker.onmessage = function(event) {
+                document.getElementById('result').textContent = 'Result: ' + event.data;
+            };
+
+            // Start the calculation
+            worker.postMessage('start');
+        }
+    </script>
 </body>
 </html>
