@@ -1,48 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ToDo List</title>
-  <style>
-    #tasks {
-      margin-bottom: 10px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag and Drop</title>
+<style>
+    /* CSS styles */
+    .container {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px;
+        padding: 10px;
+        border: 2px dashed #ccc;
+        min-height: 100px;
     }
-  </style>
+
+    .item {
+        padding: 10px;
+        margin: 5px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .drag-over {
+        border-color: #00f;
+    }
+</style>
 </head>
 <body>
-  <h2>To-Do List</h2>
-  <input type="text" id="taskInput" placeholder="Enter task">
-  <button onclick="addTask()">Add Task</button>
-  <div id="tasks"></div>
 
-  <script>
-    function addTask() {
-      var taskInput = document.getElementById("taskInput");
-      var task = taskInput.value;
-      if (task.trim() === "") return; // Don't add empty tasks
-      
-      var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      tasks.push(task);
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      
-      displayTasks();
-      taskInput.value = "";
+<h2>Drag and Drop Example</h2>
+
+<div class="container" id="container1" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="item" id="item1" draggable="true" ondragstart="drag(event)">Item 1</div>
+    <div class="item" id="item2" draggable="true" ondragstart="drag(event)">Item 2</div>
+    <div class="item" id="item3" draggable="true" ondragstart="drag(event)">Item 3</div>
+</div>
+
+<div class="container" id="container2" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <div class="item" id="item4" draggable="true" ondragstart="drag(event)">Item 4</div>
+    <div class="item" id="item5" draggable="true" ondragstart="drag(event)">Item 5</div>
+</div>
+
+<script>
+    // JavaScript code
+    function allowDrop(event) {
+        event.preventDefault();
+        event.target.classList.add('drag-over');
     }
-    
-    function displayTasks() {
-      var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      var tasksDiv = document.getElementById("tasks");
-      tasksDiv.innerHTML = "";
-      tasks.forEach(function(task) {
-        var taskElement = document.createElement("div");
-        taskElement.textContent = task;
-        tasksDiv.appendChild(taskElement);
-      });
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
     }
-    
-    // Display tasks when page loads
-    displayTasks();
-  </script>
+
+    function drop(event) {
+        event.preventDefault();
+        var data = event.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        event.target.appendChild(draggedElement);
+        event.target.classList.remove('drag-over');
+    }
+</script>
+
 </body>
 </html>
