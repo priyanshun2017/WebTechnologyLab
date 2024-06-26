@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+    <script>
+        const apiKey = '35c6e80d6bad0abe525432fcce1ca69f';
+        let favMovies = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search').addEventListener('keyup', function () {
+                let query = this.value;
+                if (query.length > 2) {
+                    axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`)
+                        .then(response => {
+                            displayResults(response.data.results);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching search results:', error);
+                        });
+                }
+            });
+        });
+
+        function displayResults(movies) {
+            let main = document.getElementById('main');
+            main.innerHTML = '';
+            movies.forEach(movie => {
+                let movieDiv = document.createElement('div');
+                movieDiv.className = 'movie';
+                movieDiv.innerHTML = `
+                    <h3>${movie.title}</h3>
+                    <button onclick="addFavorite('${movie.title}')">Add to Favorites</button>
+                `;
+                main.appendChild(movieDiv);
+            });
+        }
+
+        function addFavorite(movie) {
+            if (favMovies.length < 3) {
+                favMovies.push(movie);
+                alert('Movie added to favorites: ' + movie);
+            } else {
+                alert('You can only add up to 3 favorite movies.');
+            }
+        }
+
+        function openForm() {
+            let name = prompt('Enter your name:');
+            let regno = prompt('Enter your registration number:');
+            
+            if (name && regno && favMovies.length > 0) {
+                let formData = new FormData();
+                formData.append('name', name);
+                formData.append('regno', regno);
+                formData.append('favmovie1', favMovies[0] || '');
+                formData.append('favmovie2', favMovies[1] || '');
+                formData.append('favmovie3', favMovies[2] || '');
+
+                axios.post('process_form.php', formData)
+                .then(response => {
+                    alert('Favorite movies and details saved successfully!');
+                    let userEmail = prompt('Enter your email to receive a confirmation:');
+                    if (userEmail) {
+                        axios.post('send_email.php', { email: userEmail })
+                            .then(emailResponse => {
+                                alert('Confirmation email sent successfully!');
+                            })
+                            .catch(emailError => {
+                                console.error('Error sending email:', emailError);
+                                alert('Failed to send confirmation email.');
+                            });
+                    }
+                })
+                    .catch(error => {
+                        console.error('Error saving data:', error);
+                        alert('Error saving data. Please try again.');
+                    });
+            } else {
+                alert('Please enter name, registration number, and at least one favorite movie.');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <form id="form">
+            <input type="text" id="search" placeholder="Search" class="search" />
+        </form>
+        <button onclick="openForm()">Submit Favorites</button>
+        <button onclick="location.href='display_favorites.php'">View Favorite Movies</button>
+    </header>
+
+    <main id="main">
+        <!-- Your main content here -->
+    </main>
+</body>
+
+</html>
